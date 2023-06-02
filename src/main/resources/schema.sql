@@ -1,3 +1,8 @@
+drop table IF EXISTS price;
+drop table IF EXISTS brand;
+drop table IF EXISTS price_list;
+drop table IF EXISTS product;
+
 create TABLE brand (
   id BIGINT PRIMARY KEY,
   name VARCHAR(255)

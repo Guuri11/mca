@@ -1,6 +1,6 @@
 package com.mca.price.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -18,8 +18,8 @@ public class Price {
   @Id
   private Long id;
   private Brand brand;
-  private LocalDateTime startDate;
-  private LocalDateTime endDate;
+  private LocalDate startDate;
+  private LocalDate endDate;
   private PriceList priceList;
   private Product product;
   private int priority;
