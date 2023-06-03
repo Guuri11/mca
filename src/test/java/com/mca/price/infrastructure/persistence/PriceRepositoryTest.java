@@ -7,9 +7,8 @@ import static org.mockito.Mockito.when;
 import com.mca.price.domain.Brand;
 import com.mca.price.domain.Currency;
 import com.mca.price.domain.Price;
-import com.mca.price.domain.PriceList;
 import com.mca.price.domain.Product;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,56 +22,63 @@ class PriceRepositoryTest {
   private PriceRepository priceRepository;
 
   @Test
-  void findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct_ShouldReturnPrice() {
+  void findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandIdAndProductId_ShouldReturnPrice() {
     // Given
-    final LocalDate date = LocalDate.now();
+    final LocalDateTime date = LocalDateTime.now();
     final Brand brand = new Brand(1L, "Example Brand");
     final Product product = new Product(1L, "Example Product");
-    final PriceList priceList = new PriceList(1L, "Example Price List");
 
-    final Price expectedPrice = new Price(1L, brand, date, date.plusDays(1), priceList, product, 1, 10, Currency.EUR);
+    final Price expectedPrice = new Price(1L, brand, date, date.plusDays(1), 1L, product, 1, 10, Currency.EUR);
 
-    when(priceRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(date, date, brand,
-        product))
+    when(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+            date, date,
+            product.getId(),
+            brand.getId()))
         .thenReturn(Mono.just(expectedPrice));
 
     // When
-    final Mono<Price> result = priceRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(
+    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
         date, date,
-        brand, product);
-
+        product.getId(),
+        brand.getId());
     // Then
     StepVerifier.create(result)
         .expectNext(expectedPrice)
         .verifyComplete();
 
-    verify(priceRepository, times(1)).findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(date,
-        date,
-        brand, product);
+    verify(priceRepository,
+        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        date, date,
+        brand.getId(), product.getId());
   }
 
   @Test
-  void findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct_ShouldReturnNull() {
+  void findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandIdAndProductId_ShouldReturnNull() {
     // Given
-    final LocalDate date = LocalDate.now();
+    final LocalDateTime date = LocalDateTime.now();
     final Brand brand = new Brand(1L, "Example Brand");
     final Product product = new Product(1L, "Example Product");
-    
-    when(priceRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(date, date, brand,
-        product))
+
+    when(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+            date, date,
+            product.getId(),
+            brand.getId()))
         .thenReturn(Mono.empty());
 
     // When
-    final Mono<Price> result = priceRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(
+    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
         date, date,
-        brand, product);
+        product.getId(), brand.getId());
 
     // Then
     StepVerifier.create(result)
         .verifyComplete();
 
-    verify(priceRepository, times(1)).findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandAndProduct(date,
-        date,
-        brand, product);
+    verify(priceRepository,
+        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        date, date,
+        brand.getId(), product.getId());
   }
 }
