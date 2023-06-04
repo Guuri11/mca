@@ -8,6 +8,11 @@ create TABLE IF NOT EXISTS brand (
   name VARCHAR(255)
 );
 
+create TABLE IF NOT EXISTS price_list (
+  id BIGINT PRIMARY KEY,
+  name VARCHAR(255)
+);
+
 create TABLE IF NOT EXISTS price (
   id BIGINT PRIMARY KEY,
   brand_id BIGINT,

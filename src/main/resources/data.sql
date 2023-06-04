@@ -1,9 +1,16 @@
 delete from price;
 delete from product;
 delete from brand;
+delete from price_list;
 
 insert into product (id, name) values
   (35455, 'Product 1');
+
+insert into price_list (id, name) values
+  (1, 'Price list 1'),
+  (2, 'Price list 2'),
+  (3, 'Price list 3'),
+  (4, 'Price list 4');
 
 insert into brand (id, name) values
   (1, 'Zara');
