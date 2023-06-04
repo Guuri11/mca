@@ -25,32 +25,30 @@ class PriceRepositoryTest {
   void findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndBrandIdAndProductId_ShouldReturnPrice() {
     // Given
     final LocalDateTime date = LocalDateTime.now();
-    final Brand brand = new Brand(1L, "Example Brand");
-    final Product product = new Product(1L, "Example Product");
 
-    final Price expectedPrice = new Price(1L, brand, date, date.plusDays(1), 1L, product, 1, 10, Currency.EUR);
+    final Price expectedPrice = new Price(1L, 1L, date, date.plusDays(1), 1L, 1L, 1, 10, Currency.EUR);
 
     when(
-        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
             date, date,
-            product.getId(),
-            brand.getId()))
+            1L,
+            1L))
         .thenReturn(Mono.just(expectedPrice));
 
     // When
-    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
         date, date,
-        product.getId(),
-        brand.getId());
+        1L,
+        1L);
     // Then
     StepVerifier.create(result)
         .expectNext(expectedPrice)
         .verifyComplete();
 
     verify(priceRepository,
-        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
         date, date,
-        brand.getId(), product.getId());
+        1L, 1L);
   }
 
   @Test
@@ -61,14 +59,14 @@ class PriceRepositoryTest {
     final Product product = new Product(1L, "Example Product");
 
     when(
-        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
             date, date,
             product.getId(),
             brand.getId()))
         .thenReturn(Mono.empty());
 
     // When
-    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+    final Mono<Price> result = priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
         date, date,
         product.getId(), brand.getId());
 
@@ -77,7 +75,7 @@ class PriceRepositoryTest {
         .verifyComplete();
 
     verify(priceRepository,
-        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        times(1)).findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
         date, date,
         brand.getId(), product.getId());
   }

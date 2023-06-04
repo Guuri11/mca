@@ -15,15 +15,7 @@ public class PriceMapper {
 
   public PriceDto toDto(final Price entity) {
 
-    if (Objects.isNull(entity)) {
-      return null;
-    }
-    final PriceDto priceDto = modelMapper.map(entity, PriceDto.class);
-    priceDto.setBrandId(entity.getBrand()
-        .getId());
-    priceDto.setProductId(entity.getProduct()
-        .getId());
-    return priceDto;
+    return Objects.isNull(entity) ? null : modelMapper.map(entity, PriceDto.class);
   }
 
   public Price toEntity(final PriceDto dto) {

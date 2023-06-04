@@ -7,9 +7,9 @@ import reactor.core.publisher.Mono;
 
 public interface PriceRepository extends ReactiveCrudRepository<Price, Long> {
 
-  Mono<Price> findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+  Mono<Price> findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
       LocalDateTime startDate,
       LocalDateTime endDate,
-      Long product,
-      Long brand);
+      Long productId,
+      Long brandId);
 }

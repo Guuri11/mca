@@ -20,7 +20,7 @@ public class PriceService {
 
   public Mono<PriceDto> getPrice(final LocalDateTime date, final Long productId, final Long brandId) {
 
-    return priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+    return priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
             date, date, productId, brandId)
         .map(this.priceMapper::toDto)
         .switchIfEmpty(Mono.error(new NotFoundException()));

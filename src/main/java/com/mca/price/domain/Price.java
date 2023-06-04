@@ -19,13 +19,14 @@ public class Price {
   @Id
   private Long id;
   @Column("brand_id")
-  private Brand brand;
+  private Long brandId;
   private LocalDateTime startDate;
   private LocalDateTime endDate;
-  private Long priceList;
+  @Column("price_list_id")
+  private Long priceListId;
 
   @Column("product_id")
-  private Product product;
+  private Long productId;
   private int priority;
 
   private float amount;

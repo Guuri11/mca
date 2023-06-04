@@ -22,7 +22,7 @@ class PriceServiceTest {
   void GivenADateAndProductIdAndBrandId_WhenGetPrice_thenReturnPriceDto() {
     // Given
     when(
-        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
             DATE, DATE, 1L, 1L)).thenReturn(
         Mono.just(price));
     when(priceMapper.toDto(price)).thenReturn(priceDto);
@@ -37,7 +37,7 @@ class PriceServiceTest {
   void GivenADateAndProductIdAndBrandId_WhenGetPrice_thenReturnNotFoundException() {
     // Given
     when(
-        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductAndBrandOrderByPriorityDesc(
+        priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
             DATE, DATE, 1L, 1L)).thenReturn(
         Mono.empty());
 
