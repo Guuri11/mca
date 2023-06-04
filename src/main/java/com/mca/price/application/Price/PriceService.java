@@ -1,11 +1,12 @@
 package com.mca.price.application.Price;
 
+import com.mca.price.domain.Brand;
+import com.mca.price.domain.Product;
 import com.mca.price.domain.mappers.PriceMapper;
 import com.mca.price.infrastructure.persistence.BrandRepository;
 import com.mca.price.infrastructure.persistence.PriceRepository;
 import com.mca.price.infrastructure.persistence.ProductRepository;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -29,25 +30,34 @@ public class PriceService {
 
   public Mono<PriceDto> getPrice(final LocalDateTime date, final Long productId, final Long brandId) {
 
-    return priceRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
-            date, date, getProductId(productId), getBrandId(brandId))
-        .map(this.priceMapper::toDto)
-        .switchIfEmpty(Mono.error(new NotFoundException()));
+    return Mono.zip(
+            getProductId(productId),
+            getBrandId(brandId)
+        )
+        .flatMap(tuple -> {
+          final Long resolvedProductId = tuple.getT1();
+          final Long resolvedBrandId = tuple.getT2();
+          return priceRepository
+              .findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqualAndProductIdAndBrandIdOrderByPriorityDesc(
+                  date, date, resolvedProductId, resolvedBrandId
+              )
+              .map(priceMapper::toDto)
+              .switchIfEmpty(Mono.error(new NotFoundException()));
+        });
   }
 
-  private Long getProductId(final Long productId) {
+  private Mono<Long> getProductId(final Long productId) {
 
-    return Objects.requireNonNull(productRepository.findById(productId)
-            .switchIfEmpty(Mono.error(new NotFoundException()))
-            .block())
-        .getId();
+    return productRepository.findById(productId)
+        .switchIfEmpty(Mono.error(new NotFoundException()))
+        .map(Product::getId);
   }
 
-  private Long getBrandId(final Long brandId) {
+  private Mono<Long> getBrandId(final Long brandId) {
 
-    return Objects.requireNonNull(brandRepository.findById(brandId)
-            .switchIfEmpty(Mono.error(new NotFoundException()))
-            .block())
-        .getId();
+    return brandRepository.findById(brandId)
+        .switchIfEmpty(Mono.error(new NotFoundException()))
+        .map(Brand::getId);
   }
+
 }
